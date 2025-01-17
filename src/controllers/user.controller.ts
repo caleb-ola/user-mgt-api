@@ -5,6 +5,7 @@ import AsyncHandler from "../utils/asyncHandler";
 import { CustomRequest } from "../middlewares/middleware.types";
 import NotAuthorized from "../errors/NotAuthorized.error";
 import DeviceDetector from "node-device-detector";
+import path from "path";
 
 export const getCurrentUser = AsyncHandler(
   async (req: CustomRequest, res: Response, next: NextFunction) => {
@@ -35,13 +36,38 @@ export const updateUserProfile = AsyncHandler(
 
     if (name) user.name = name;
 
-    await user.save();
+    await user.save({});
 
     res.status(200).json({
       status: "success",
       data: {
         data: user,
       },
+    });
+  }
+);
+
+export const uploadUserImage = AsyncHandler(
+  async (req: CustomRequest, res, next) => {
+    const { currentUser } = req;
+
+    if (!req.file) throw new BadRequestError("No file uploaded!");
+
+    const user = await User.findById(currentUser.id);
+    if (!user)
+      throw new NotAuthorized("You are not allowed to perform this action");
+
+    console.log(
+      "File path:",
+      path.join(__dirname, "uploads", req.file.filename)
+    );
+
+    user.profileImage = `${__dirname}/../uploads/${req.file.filename}`;
+    await user.save();
+
+    res.status(200).json({
+      status: "success",
+      message: "Profile image updated successfully",
     });
   }
 );

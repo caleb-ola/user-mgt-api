@@ -7,7 +7,7 @@ interface UserTypes {
   name: string;
   email: string;
   bio: string;
-  avatar: string;
+  profileImage: string;
   devices: [Object];
   password: string;
   isVerified: boolean;
@@ -36,7 +36,7 @@ const userSchema = new mongoose.Schema<UserTypes>(
       type: String,
       max: [250, "Bio cannot be more than 25 characters"],
     },
-    avatar: String,
+    profileImage: String,
     devices: [
       {
         type: [Object],
