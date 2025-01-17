@@ -7,6 +7,7 @@ import {
 
 const router = Router();
 
+//Auth routes
 router.post("/signup", signup);
 router.post("/login", login);
 router.post("/email-verification", emailVerification);
